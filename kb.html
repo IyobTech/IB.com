@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IB Tech — Knowledge Base</title>
+  <style>
+    :root{
+      --bg:#071226;
+      --card:#0b1228;
+      --muted:#9fb0c6;
+      --accent:#2563eb;
+      --accent-2:#06b6d4;
+      --text:#eaf6ff;
+      --subtle:#b7c9d9;
+      --radius:12px;
+      --max-width:1200px;
+      --gap:18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#041022 140%);color:var(--text);-webkit-font-smoothing:antialiased}
+    .wrap{max-width:var(--max-width);margin:36px auto;padding:28px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;box-shadow:0 8px 28px rgba(2,6,23,0.6);flex:0 0 56px}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted);font-size:14px}
+    .hero{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+    .searchbar{flex:1;display:flex;gap:12px;align-items:center}
+    .searchbar input{flex:1;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.01);color:var(--text);font-size:15px}
+    .searchbar button{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;font-weight:600;cursor:pointer}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:20px}
+    .sidebar{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:16px;border-radius:12px;height:fit-content}
+    .sidebar h3{margin:0 0 8px 0;font-size:15px;color:var(--subtle)}
+    .category{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .chip{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted);font-size:13px;cursor:pointer;border:1px solid rgba(255,255,255,0.02)}
+    .chip.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;box-shadow:0 8px 20px rgba(37,99,235,0.08)}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:22px;border-radius:var(--radius);box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    .list-item{padding:12px;border-radius:10px;margin-bottom:10px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);cursor:pointer}
+    .list-item h4{margin:0;font-size:15px}
+    .list-item p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+    .article{padding:8px 0}
+    .article h2{margin:0 0 8px 0;font-size:20px}
+    .meta{color:var(--muted);font-size:13px;margin-bottom:12px}
+    .article p{line-height:1.6;color:var(--text);font-size:15px}
+    pre, code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;color:var(--text);font-size:13px}
+    .tags{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+    .tag{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted);font-size:13px}
+    .helpful{display:flex;gap:10px;margin-top:18px;align-items:center}
+    .btn{padding:8px 12px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:var(--text);cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+    .empty{color:var(--muted);padding:18px;border-radius:10px;background:rgba(255,255,255,0.01);text-align:center}
+    footer{margin-top:22px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}.searchbar{width:100%}}
+  </style>
+  <script>
+    // Minimal client-side knowledge base behavior
+    const KB = {
+      articles: [
+        {
+          id: "getting-started",
+          title: "Getting Started with IB Tech",
+          category: "Onboarding",
+          summary: "Create an account, provision a sandbox project, and make your first API call.",
+          updated: "2026-04-06",
+          content: `<p>This guide helps new users set up a sandbox project and run a simple end-to-end example.</p>
+                    <h3>Steps</h3>
+                    <ol>
+                      <li>Create an account on the developer portal.</li>
+                      <li>hoose one of service </li>
+                      <li>Verify your email </li>
+                      <li>enjoy the result</li>
+                    </ol>
+                    <pre><code>curl https://iyobyech.github.io/IB.com \\
+  -H "Authorization: Bearer &lt;SANDBOX_KEY&gt;" \\
+  -H "Content-Type: application/web app" \\
+  -d '{"name":"demo-project"}'</code></pre>
+                    <p>Use sandbox keys for development and rotate keys before production.</p>`
+        },
+        {
+          id: "auth-best-practices",
+          title: "Authentication and API Keys",
+          category: "Security",
+          summary: "How to manage API keys, master access key, and recommended secret storage.",
+          updated: "2026-03-20",
+          content: `<p>IB Tech supports scoped API keys for server-to-server integrations and x access key for user-authorized flows.</p>
+                    <h3>Best practices</h3>
+                    <ul>
+                      <li>Store keys in a secret manager (Vault, AWS Secrets Manager).</li>
+                      <li>Use separate keys for sandbox and production.</li>
+                      <li>Rotate keys regularly and revoke compromised keys immediately.</li>
+                    </ul>
+                    `
+        },
+        {
+          id: "webhooks",
+          title: "Webhooks: Setup and Troubleshooting",
+          category: "Integrations",
+          summary: "Registering webhooks, verifying signatures, and handling retries.",
+          updated: "2026-02-10",
+          content: `<p>Webhooks deliver asynchronous events to your endpoint. Secure them by validating signatures and implementing idempotency.</p>
+                    <h3>Signature verification</h3>
+                    <p>IB Tech signs webhook payloads with a shared secret. Verify the signature header before processing.</p>
+                    <h3>Retry behavior</h3>
+                    <p>We retry failed deliveries with exponential backoff. Ensure your handler is idempotent.</p>`
+        },
+        {
+          id: "deploy-checklist",
+          title: "Production Deployment Checklist",
+          category: "Operations",
+          summary: "Pre-deploy checks, monitoring, and rollback procedures for safe releases.",
+          updated: "2026-01-18",
+          content: `<p>Follow this checklist before deploying to production to reduce risk and ensure observability.</p>
+                    <ul>
+                      <li>Run full test suite and integration tests in staging.</li>
+                      <li>Verify migrations and have a rollback plan.</li>
+                      <li>Ensure monitoring and alerts are configured for key SLOs.</li>
+                    </ul>`
+        },
+        {
+          id: "rate-limits",
+          title: "API Rate Limits and Best Practices",
+          category: "API",
+          summary: "Understanding rate limits, handling 429 responses, and backoff strategies.",
+          updated: "2026-03-01",
+          content: `<p>IB Tech enforces rate limits to protect platform stability. Respect Retry-After headers and implement exponential backoff with jitter.</p>
+                    <pre><code>// Pseudocode backoff
+sleep = base * (2 ** attempts) + random_jitter()</code></pre>`
+        },
+        {
+          id: "data-protection",
+          title: "Data Protection and Compliance",
+          category: "Security",
+          summary: "How IB Tech handles client data, retention, and requests for deletion.",
+          updated: "2026-04-06",
+          content: `<p>We treat client data as confidential and provide mechanisms for data export and deletion on request. For regulated environments, request a Data Processing Addendum (DPA).</p>`
+        }
+      ],
+      categories: ["All", "Onboarding", "API", "Integrations", "Security", "Operations"]
+    };
+
+    function renderCategories() {
+      const container = document.getElementById('kb-categories');
+      KB.categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'chip' + (cat === 'All' ? ' active' : '');
+        btn.textContent = cat;
+        btn.dataset.cat = cat;
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          filterAndRender();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function renderList(filtered) {
+      const list = document.getElementById('kb-list');
+      list.innerHTML = '';
+      if (!filtered.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No articles match your search or selected category.';
+        list.appendChild(empty);
+        return;
+      }
+      filtered.forEach(a => {
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        item.dataset.id = a.id;
+        item.innerHTML = `<h4>${a.title}</h4><p>${a.summary}</p><div class="meta">${a.category} • Updated ${a.updated}</div>`;
+        item.addEventListener('click', () => showArticle(a.id));
+        list.appendChild(item);
+      });
+    }
+
+    function showArticle(id) {
+      const article = KB.articles.find(x => x.id === id);
+      const area = document.getElementById('kb-article');
+      if (!article) {
+        area.innerHTML = `<div class="empty">Article not found.</div>`;
+        return;
+      }
+      area.innerHTML = `
+        <div class="article">
+          <h2>${article.title}</h2>
+          <div class="meta">${article.category} • Updated ${article.updated}</div>
+          ${article.content}
+          <div class="tags">
+            <span class="tag">${article.category}</span>
+            <span class="tag">KB Article</span>
+            <span class="tag">ID: ${article.id}</span>
+          </div>
+          <div class="helpful">
+            <div class="small">Was this article helpful?</div>
+            <button class="btn" onclick="recordFeedback('${article.id}', true)">Yes</button>
+            <button class="btn" onclick="recordFeedback('${article.id}', false)">No</button>
+            <button class="btn primary" onclick="openSupport()">Contact Support</button>
+          </div>
+        </div>
+      `;
+      // Scroll article into view on small screens
+      document.getElementById('kb-article').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function recordFeedback(id, helpful) {
+      // Minimal client-side stub: in a real product this would POST to an analytics endpoint
+      const msg = helpful ? 'Thanks — glad it helped.' : 'Thanks — we will review this article.';
+      alert(msg);
+    }
+
+    function openSupport() {
+      // In a real site this would open a support ticket form
+      alert('Open a support ticket at jobmulisa@gmail.com with the article ID and details.');
+    }
+
+    function filterAndRender() {
+      const q = document.getElementById('kb-search').value.toLowerCase().trim();
+      const activeCat = document.querySelector('.chip.active')?.dataset?.cat || 'All';
+      let filtered = KB.articles.filter(a => {
+        const matchesCat = activeCat === 'All' || a.category === activeCat;
+        const text = (a.title + ' ' + a.summary + ' ' + a.content).toLowerCase();
+        const matchesQuery = q === '' || text.includes(q);
+        return matchesCat && matchesQuery;
+      });
+      // Sort by updated date desc
+      filtered.sort((a,b) => b.updated.localeCompare(a.updated));
+      renderList(filtered);
+      // If first article exists, show it by default
+      if (filtered.length) showArticle(filtered[0].id);
+      else document.getElementById('kb-article').innerHTML = `<div class="empty">Select an article to view details.</div>`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCategories();
+      document.getElementById('kb-search').addEventListener('input', filterAndRender);
+      renderList(KB.articles.slice().sort((a,b) => b.updated.localeCompare(a.updated)));
+      showArticle(KB.articles[0].id);
+    });
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">IB</div>
+      <div>
+        <h1>IB Tech Knowledge Base</h1>
+        <div class="muted">Self-service articles, how-tos, and operational guidance for developers and customers</div>
+      </div>
+    </header>
+
+    <div class="hero">
+      <div class="searchbar" style="flex:1">
+        <input id="kb-search" type="search" placeholder="Search articles, errors, endpoints, or keywords..." aria-label="Search knowledge base">
+        <button onclick="filterAndRender()">Search</button>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="btn" onclick="alert('Open contribution guide: create a PR to the docs repo with your changes.')">Contribute</button>
+        <button class="btn primary" onclick="openSupport()">Contact Support</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <aside class="sidebar card" aria-label="Knowledge base categories">
+        <h3>Categories</h3>
+        <div id="kb-categories" class="category" role="list"></div>
+
+        <h3 style="margin-top:16px">Popular Articles</h3>
+        <div style="margin-top:8px">
+          <div class="list-item" onclick="showArticle('getting-started')">
+            <h4>Getting Started with IB Tech</h4>
+            <p>Provision a sandbox project and make your first API call.</p>
+          </div>
+          <div class="list-item" onclick="showArticle('webhooks')">
+            <h4>Webhooks: Setup and Troubleshooting</h4>
+            <p>Secure webhooks, verify signatures, and handle retries.</p>
+          </div>
+          <div class="list-item" onclick="showArticle('auth-best-practices')">
+            <h4>Authentication and API Keys</h4>
+            <p>Best practices for key management and OAuth flows.</p>
+          </div>
+        </div>
+      </aside>
+
+      <main class="card" id="kb-main" role="main">
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div style="flex:0 0 420px">
+            <div id="kb-list"></div>
+          </div>
+          <div style="flex:1;padding-left:8px;border-left:1px solid rgba(255,255,255,0.02)">
+            <div id="kb-article"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <footer>
+      <div class="muted">© IB Tech • Knowledge Base</div>
+      <div class="muted">Last updated: April 6, 2026</div>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IB Tech Documentation</title>
+  <style>
+    :root{
+      --bg:#071226;
+      --card:#0b1228;
+      --muted:#9fb0c6;
+      --accent:#2563eb;
+      --accent-2:#06b6d4;
+      --text:#eaf6ff;
+      --subtle:#b7c9d9;
+      --radius:12px;
+      --max-width:1100px;
+      --gap:18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#041022 140%);color:var(--text);-webkit-font-smoothing:antialiased}
+    .wrap{max-width:var(--max-width);margin:36px auto;padding:28px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;box-shadow:0 8px 28px rgba(2,6,23,0.6);flex:0 0 56px}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted);font-size:14px}
+    nav{display:flex;gap:10px;margin:18px 0 22px 0;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);font-size:14px}
+    nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 8px 24px rgba(37,99,235,0.12);color:white}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:20px}
+    .sidebar{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:16px;border-radius:12px;height:fit-content}
+    .sidebar h3{margin:0 0 8px 0;font-size:15px;color:var(--subtle)}
+    .sidebar a{display:block;color:var(--muted);text-decoration:none;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02);font-size:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:22px;border-radius:var(--radius);box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    h2{margin-top:0;color:var(--text);font-size:18px}
+    h3.section{margin:18px 0 8px 0;color:var(--text);font-size:16px}
+    p{line-height:1.65;margin:10px 0;color:var(--text);font-size:15px}
+    pre, code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;color:var(--text);font-size:13px}
+    pre{overflow:auto;padding:12px}
+    table{width:100%;border-collapse:collapse;margin:12px 0}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left;font-size:14px;color:var(--subtle)}
+    .muted-note{color:var(--muted);font-size:13px;margin-top:8px}
+    .cta{display:inline-block;margin-top:14px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:600}
+    footer{margin-top:22px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}.sidebar{order:2}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">IB</div>
+      <div>
+        <h1>IB Tech Documentation</h1>
+        <div class="muted">Guides, API reference, SDKs, and operational notes for IB Tech products</div>
+      </div>
+    </header>
+
+    <nav>
+      <a class="active" href="#overview">Overview</a>
+      <a href="#getting-started">Getting Started</a>
+      <a href="#api">API Reference</a>
+      <a href="#auth">Authentication</a>
+      <a href="#sdks">SDKs & CLI</a>
+      <a href="#deploy">Deployment</a>
+      <a href="#troubleshooting">Troubleshooting</a>
+      <a href="#faq">FAQ</a>
+      <a href="#changelog">Changelog</a>
+    </nav>
+
+    <div class="grid">
+      <aside class="sidebar card" aria-label="Documentation navigation">
+        <h3>Contents</h3>
+        <a href="#overview">Overview</a>
+        <a href="#getting-started">Getting Started</a>
+        <a href="#installation">Installation</a>
+        <a href="#api">API Reference</a>
+        <a href="#auth">Authentication</a>
+        <a href="#sdks">SDKs & CLI</a>
+        <a href="#configuration">Configuration</a>
+        <a href="#deploy">Deployment</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a href="#faq">FAQ</a>
+        <a href="#changelog">Changelog</a>
+        <a href="#support">Support</a>
+      </aside>
+
+      <main class="card" role="main">
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>IB Tech provides a modular platform and developer APIs designed to help teams build, integrate, and operate modern web services. This documentation covers product concepts, integration patterns, API endpoints, SDK usage, deployment recommendations, and operational best practices. It is intended for engineers, product managers, and technical decision-makers who will integrate or operate IB Tech services.</p>
+          <p>Read this documentation to understand how IB Tech components fit together, what configuration options are available, and how to secure and monitor your integration. If you are evaluating IB Tech for the first time, start with the Getting Started guide to provision a sandbox account and run a quick end-to-end example.</p>
+        </section>
+
+        <section id="getting-started">
+          <h3 class="section">Getting Started</h3>
+          <p>This quickstart walks you through creating an account, obtaining API credentials, and making your first API call. Typical onboarding takes under 30 minutes for a basic integration and a few hours for a production-ready setup that includes webhooks, monitoring, and role-based access controls.</p>
+          <p>Steps:</p>
+          <ol>
+            <li>Create an IB Tech account at the developer portal and verify your email.</li>
+            <li>Create a project and generate API keys for the environment (sandbox or production).</li>
+            <li>Install the official SDK for your language or use curl to call the REST API directly.</li>
+            <li>Configure webhooks to receive asynchronous events and set up a secure endpoint.</li>
+          </ol>
+          <p class="muted-note">Tip: Use sandbox keys for development and rotate keys before moving to production.</p>
+        </section>
+
+        <section id="installation">
+          <h3 class="section">Installation</h3>
+          <p>Install the IB Tech SDK or use direct HTTP calls. install IB tech.apk:</p>
+          <pre><code> IB tech.apk </code></pre>
+          <p>Python:</p>
+          <pre><code>pip install ibtech-sdk</code></pre>
+          <p>If you prefer not to use an SDK, the API is fully RESTful and documented in the API Reference section below.</p>
+        </section>
+
+        <section id="api">
+          <h3 class="section">API Reference</h3>
+          <p>The API follows REST conventions and uses cloud computing for requests and responses. Base URL:</p>
+          <pre><code>https://iyobtech.github.io/IB.com</code></pre>
+          <p>Common endpoints:</p>
+          <table>
+            <thead>
+              <tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>/projects</td><td>GET, POST</td><td>List and create projects</td></tr>
+              <tr><td>/projects/{id}</td><td>GET, PATCH, DELETE</td><td>Retrieve or modify a project</td></tr>
+              <tr><td>/webhooks</td><td>POST</td><td>Register webhook endpoints</td></tr>
+              <tr><td>/events</td><td>GET</td><td>Query event logs</td></tr>
+            </tbody>
+          </table>
+          <p>Example request to create a project:</p>
+          <pre><code>POST /v1/projects
+Content-Type: application/json
+Authorization: Bearer &lt;API_KEY&gt;
+
+{
+  "name": "My Project",
+  "region": "us-west-2"
+}</code></pre>
+          <p>Successful response returns the created project object with an identifier and metadata.</p>
+        </section>
+
+        <section id="auth">
+          <h3 class="section">Authentication</h3>
+          <p>IB Tech uses API keys and masker access key for authentication depending on the integration type. For server-to-server integrations, use scoped API keys. For user-facing integrations where users grant access, use x acces key authorization code flow.</p>
+          <p>API key best practices:</p>
+          <ul>
+            <li>Store keys securely (environment variables or secret manager).</li>
+            <li>Use separate keys for sandbox and production.</li>
+            <li>Rotate keys periodically and revoke compromised keys immediately.</li>
+          </ul>
+          <p>OAuth example: redirect users to the authorization endpoint, exchange the code for tokens, and refresh tokens as needed.</p>
+        </section>
+
+        <section id="sdks">
+          <h3 class="section">SDKs & CLI</h3>
+          <p>Official SDKs are available for Node.js, Python, and Go. Each SDK provides typed clients, helpers for pagination, and utilities for signing requests. Example (Node.js):</p>
+          <pre><code>const IB = require('@ibtech/sdk');
+const client = new IB({ apiKey: process.env.IB_API_KEY });
+
+const project = await client.projects.create({ name: 'Demo' });
+console.log(project.id);</code></pre>
+          <p>We also provide a CLI for common tasks: creating projects, managing keys, and testing webhooks.</p>
+          <pre><code>ibtech projects create --name "Demo"</code></pre>
+        </section>
+
+        <section id="configuration">
+          <h3 class="section">Configuration</h3>
+          <p>Configuration options include region, logging level, retry policy, and webhook signing secrets. Example environment variables:</p>
+          <pre><code>IB_API_KEY=sk_live_...
+IB_REGION=us-west-2
+IB_LOG_LEVEL=info</code></pre>
+          <p>For production, enable structured logging and integrate with your observability stack (Datadog, Prometheus, or similar).</p>
+        </section>
+
+        <section id="deploy">
+          <h3 class="section">Deployment</h3>
+          <p>Recommended deployment pattern: run stateless application instances behind a load balancer, use managed databases, and configure health checks. For webhooks, use a stable public endpoint with TLS and verify signatures on incoming requests.</p>
+          <p>CI/CD checklist:</p>
+          <ul>
+            <li>Run unit and integration tests against sandbox environment.</li>
+            <li>Perform key rotation and secret injection via your pipeline.</li>
+            <li>Deploy with gradual rollout and monitor error rates and latency.</li>
+          </ul>
+        </section>
+
+        <section id="troubleshooting">
+          <h3 class="section">Troubleshooting</h3>
+          <p>Common issues and resolutions:</p>
+          <ul>
+            <li><strong>401 Unauthorized:</strong> Verify API key and environment (sandbox vs production).</li>
+            <li><strong>Webhook failures:</strong> Check endpoint reachability, TLS certificate validity, and signature verification.</li>
+            <li><strong>Rate limits:</strong> Implement exponential backoff and respect Retry-After headers.</li>
+          </ul>
+          <p>If you encounter unexpected errors, capture request IDs from responses and include them when contacting support.</p>
+        </section>
+
+        <section id="faq">
+          <h3 class="section">FAQ</h3>
+          <p><strong>Q:</strong> How do I test webhooks locally?<br><strong>A:</strong> Use a tunneling tool (ngrok, localtunnel) to expose a local endpoint and register it in the dashboard. Ensure you forward the original headers for signature verification.</p>
+          <p><strong>Q:</strong> Do you provide SLA for uptime?<br><strong>A:</strong> SLA terms are available in enterprise agreements. Contact sales for details and custom SLAs.</p>
+        </section>
+
+        <section id="changelog">
+          <h3 class="section">Changelog</h3>
+          <p>We maintain a changelog for API changes, deprecations, and new features. Subscribe to release notes in the developer portal to receive notifications about breaking changes and migration guides.</p>
+          <table>
+            <thead>
+              <tr><th>Version</th><th>Date</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>v1.3.0</td><td>2026-03-15</td><td>Added webhook signing, improved pagination, minor bug fixes</td></tr>
+              <tr><td>v1.2.0</td><td>2025-11-02</td><td>Introduced projects API and SDK improvements</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="support">
+          <h3 class="section">Support</h3>
+          <p>If you need help, contact our developer support team. Include the project ID, request ID (if available), and a concise description of the issue. For enterprise customers, dedicated support channels and SLAs are available under contract.</p>
+          <p class="muted-note">Email: <span style="color:var(--subtle)">jobmulisa@gmail.com</span> • Status: <span style="color:var(--subtle)">iyobtech.github.i/IB.com</span></p>
+          <a class="cta" href="#contact">Contact Support</a>
+        </section>
+
+        <footer>
+          <div class="muted">© IB Tech</div>
+          <div class="muted">Last updated: April 6, 2026</div>
+        </footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

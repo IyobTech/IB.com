@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IB Tech</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="" crossorigin="anonymous">
+  <link rel="stylesheet" href="styless.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="logo-3d" aria-hidden="true">
+         <img src="IB tech.png" alt="" width="100px"/>
+        <div class="brand-text">
+          <h1 data-i18n="app_title">Service Tools</h1>
+          <p data-i18n="app_sub">Modern 3D Dashboard</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-target="preview" id="btn-preview">preview<i class="fa-solid fa-eye"></i><span data-i18n="nav_preview">Preview</span></button>
+        <button class="nav-btn" data-target="tools" id="btn-tools">Tools<i class="fa-solid fa-wrench"></i><span data-i18n="nav_tools">Tools</span></button>
+        <button class="nav-btn" data-target="settings" id="btn-settings">Setting<i class="fa-solid fa-gear"></i><span data-i18n="nav_settings">Settings</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="small" data-i18n="sidebar_help">Tip: Click cards to open tools</div>
+      </div>
+    </aside>
+
+    <main class="main" id="main-content">
+      <!-- Dynamic content loaded by script.js -->
+      <section id="preview" class="page active">
+        <div class="preview-panel">
+          <div class="text-block">
+            <h2 data-i18n="preview_title">Welcome to IB TECH  Service</h2>
+            <p data-i18n="preview_desc">A modern multi-service control panel with beautiful 3D cards, multilingual support and theme switching.</p>
+            
+            <div class="features">
+              <div class="feature" data-i18n="feature_1">3D animated cards</div>
+              <div class="feature" data-i18n="feature_2">Multi-language (EN / AM / OR)</div>
+              <div class="feature" data-i18n="feature_3">Theme switcher & responsive UI</div>
+            </div>
+          </div>
+
+          <div class="visual-block">
+            <div class="floating-scene" aria-hidden="true">
+              <div class="floating-card" style="--i:0;"><i class="fa-solid fa-utensils">IMESOB</i><span></span></div>
+              <div class="floating-card" style="--i:1;"><i class="fa-solid fa-gift"></i><span>Coming soon</span></div>
+              <div class="floating-card" style="--i:2;"><i class="fa-solid fa-gift"></i><span>Coming soon</span></div>
+              <div class="floating-card" style="--i:3;"><i class="fa-solid fa-gift"></i><span>Coming soon</span></div>
+            </div>
+
+            <div class="animated-bg">
+              <svg viewBox="0 0 800 400" preserveAspectRatio="none" class="wave">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                    <stop offset="0" stop-color="#6d5bff" stop-opacity="0.9" />
+                    <stop offset="1" stop-color="#00d4ff" stop-opacity="0.7" />
+                  </linearGradient>
+                </defs>
+                <path d="M0 300 Q200 200 400 260 T800 200 L800 400 L0 400 Z" fill="url(#g1)"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tools" class="page">
+        <div class="tools-grid" id="tools-grid">
+          <!-- Cards inserted by script.js -->
+        </div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="settings-panel">
+          <h2 data-i18n="settings_title">Settings</h2>
+
+          <div class="setting-row">
+            <label for="lang-select" data-i18n="settings_language">Language</label>
+            <select id="lang-select">
+              <option value="en">English</option>
+              <option value="am">Amharic</option>
+              <option value="or">Oromo</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <label for="theme-select" data-i18n="settings_theme">Theme</label>
+            <select id="theme-select">
+              <option value="system">System Default</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <button id="reset-btn" class="btn ghost" data-i18n="settings_reset">Reset to defaults</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

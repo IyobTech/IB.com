@@ -1,0 +1,153 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: #fff;
+  user-select: none;
+}
+
+header {
+  background: rgba(0,0,0,0.2);
+  padding: 20px;
+  text-align: center;
+  background: url(e.png);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2em;
+}
+
+nav {
+  margin-top: 10px;
+}
+
+nav button {
+  background: #fff;
+  color: #2575fc;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.3s;
+
+}
+
+nav button:hover {
+  background: #2575fc;
+  color: #fff;
+}
+
+section {
+  display: none;
+  padding: 20px;
+  max-width: 850px;
+  margin: 30px auto;
+  background: rgba(0,0,0,0.3);
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+section.active {
+  display: block;
+}
+
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+button {
+  background: #ffcc00;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #fff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table, th, td {
+  border: 1px solid #fff;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+#nextPageBtn {
+  margin-top: 20px;
+  background: #28a745;
+  color: #fff;
+}
+
+p1{
+  color: greenyellow;
+}
+y {
+  color: yellow;
+}
+b{
+  color: orangered;
+}
+
+    .shadow-text {
+      font-size: 50px;
+      text-shadow: 4px 4px 4px rgba(2, 250, 2, 1);
+    }
+f ,h2{
+      font-size: 30px;
+      text-shadow: 4px 4px 4px rgba(0, 215, 2, 1)
+    }
+.Abiy{
+  position: absolute; 
+    top: 2150px;        
+    left: 740px;       
+    width: 200px;     
+    height: 20px;     
+    z-index: 2;        /* Higher z-index for foreground */
+}
+.Iyob{
+  position: absolute; 
+    top: 1800px;        
+    left: 740px;       
+    width: 200px;      
+    height: 20px;     
+    z-index: 2;        /* Higher z-index for foreground */
+}
+h5{
+  text-align: right;
+  font-family: serif;
+  font-size: 11px;
+}
+all,f{
+  font-family: serif;
+  font-size: 15px;
+}
+h2{
+  font-size: 19px;
+}
+.Ethio{
+  position: absolute; 
+    top: 10px;        
+    left: 10px;       
+    width: 200px;      
+    height: 20px;     
+    z-index: 2; 
+}

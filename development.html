@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IB Tech — Development Guide</title>
+  <style>
+    :root{
+      --bg:#071226;
+      --card:#0b1228;
+      --muted:#9fb0c6;
+      --accent:#2563eb;
+      --accent-2:#06b6d4;
+      --text:#eaf6ff;
+      --subtle:#b7c9d9;
+      --radius:12px;
+      --max-width:1100px;
+      --gap:18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#041022 140%);color:var(--text);-webkit-font-smoothing:antialiased}
+    .wrap{max-width:var(--max-width);margin:36px auto;padding:28px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;box-shadow:0 8px 28px rgba(2,6,23,0.6);flex:0 0 56px}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted);font-size:14px}
+    nav{display:flex;gap:10px;margin:18px 0 22px 0;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);font-size:14px}
+    nav a.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 8px 24px rgba(37,99,235,0.12);color:white}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:20px}
+    .sidebar{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);padding:16px;border-radius:12px;height:fit-content}
+    .sidebar h3{margin:0 0 8px 0;font-size:15px;color:var(--subtle)}
+    .sidebar a{display:block;color:var(--muted);text-decoration:none;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02);font-size:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:22px;border-radius:var(--radius);box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    h2{margin-top:0;color:var(--text);font-size:18px}
+    h3.section{margin:18px 0 8px 0;color:var(--text);font-size:16px}
+    p{line-height:1.65;margin:10px 0;color:var(--text);font-size:15px}
+    pre, code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;color:var(--text);font-size:13px}
+    pre{overflow:auto;padding:12px}
+    table{width:100%;border-collapse:collapse;margin:12px 0}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left;font-size:14px;color:var(--subtle)}
+    .muted-note{color:var(--muted);font-size:13px;margin-top:8px}
+    .cta{display:inline-block;margin-top:14px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:600}
+    footer{margin-top:22px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+    ul{margin:8px 0 12px 20px}
+    ol{margin:8px 0 12px 20px}
+    hr.sep{border:none;border-top:1px solid rgba(255,255,255,0.03);margin:20px 0}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}.sidebar{order:2}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">IB</div>
+      <div>
+        <h1>IB Tech — Development Guide</h1>
+        <div class="muted">Standards, workflows, and practical guidance for building and operating IB Tech software</div>
+      </div>
+    </header>
+
+    <nav>
+      <a class="active" href="#overview">Overview</a>
+      <a href="#workflow">Development Workflow</a>
+      <a href="#branching">Branching Strategy</a>
+      <a href="#review">Code Review</a>
+      <a href="#testing">Testing</a>
+      <a href="#cicd">CI / CD</a>
+      <a href="#infra">Infrastructure</a>
+      <a href="#security">Security</a>
+      <a href="#observability">Observability</a>
+      <a href="#release">Release Management</a>
+      <a href="#onboarding">Onboarding</a>
+    </nav>
+
+    <div class="grid">
+      <aside class="sidebar card" aria-label="Development navigation">
+        <h3>Contents</h3>
+        <a href="#overview">Overview</a>
+        <a href="#workflow">Development Workflow</a>
+        <a href="#branching">Branching Strategy</a>
+        <a href="#review">Code Review</a>
+        <a href="#testing">Testing</a>
+        <a href="#cicd">CI / CD</a>
+        <a href="#infra">Infrastructure as Code</a>
+        <a href="#security">Security Practices</a>
+        <a href="#observability">Observability</a>
+        <a href="#release">Release Management</a>
+        <a href="#onboarding">Onboarding & Contribution</a>
+        <a href="#contact">Contact</a>
+      </aside>
+
+      <main class="card" role="main">
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>This development guide captures IB Tech's practical standards and recommended practices for building reliable, maintainable, and secure software. It is intended for engineers, tech leads, and devops practitioners working on IB Tech products and integrations.</p>
+          <p>Use this document as the single source of truth for day-to-day development: how we branch, review, test, deploy, and monitor code. Where project-specific exceptions are needed, record them in the project's README and SOW.</p>
+        </section>
+
+        <hr class="sep">
+
+        <section id="workflow">
+          <h3 class="section">Development Workflow</h3>
+          <p>We follow an iterative, pull-request-driven workflow that emphasizes small, reviewable changes and continuous integration. Key principles:</p>
+          <ul>
+            <li>Make small, focused changes that are easy to review and revert.</li>
+            <li>Keep feature branches short-lived (merge within days
+            <li>Automate checks (linting, tests, security scans) in CI for every push and PR.</li>
+            <li>Document design decisions in PR descriptions and link to relevant tickets.</li>
+          </ul>
+          <p>Typical cycle:</p>
+          <ol>
+            <li>Create a branch from <code>main</code> or the active release branch.</li>
+            <li>Implement changes and add tests.</li>
+            <li>Open a pull request with a clear description, screenshots, and test plan.</li>
+            <li>Address review feedback, squash or rebase as needed, and merge after approvals and passing CI.</li>
+          </ol>
+        </section>
+
+        <section id="branching">
+          <h3 class="section">Branching Strategy</h3>
+          <p>We use a simple, pragmatic branching model:</p>
+          <table>
+            <thead><tr><th>Branch</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>main</code></td><td>Production-ready code; always deployable.</td></tr>
+              <tr><td><code>release/x.y</code></td><td>Stabilization branches for scheduled releases.</td></tr>
+              <tr><td><code>feature/...</code></td><td>New features or experiments; short-lived.</td></tr>
+              <tr><td><code>hotfix/...</code></td><td>Urgent fixes applied to <code>main</code> and backported.</td></tr>
+            </tbody>
+          </table>
+          <p>Branch naming conventions: <code>feature/issue-123-add-login</code>, <code>hotfix/2026-04-06-fix-auth</code>. Keep names descriptive and reference the ticket number when available.</p>
+        </section>
+
+        <section id="review">
+          <h3 class="section">Code Review</h3>
+          <p>Code review is mandatory for all changes. Reviews are a chance to share knowledge, catch bugs, and improve design. Expectations:</p>
+          <ul>
+            <li>At least one approving reviewer for small changes; two for larger or high-risk changes.</li>
+            <li>Reviewers check correctness, readability, tests, security implications, and performance considerations.</li>
+            <li>Use the PR description to explain the "why", not just the "what". Include a test plan and rollout notes if applicable.</li>
+            <li>Prefer constructive, actionable feedback. If a change is blocking, explain why and propose alternatives.</li>
+          </ul>
+          <p>Merge rules: passing CI, required approvals, and no unresolved conversations.</p>
+        </section>
+
+        <section id="testing">
+          <h3 class="section">Testing Strategy</h3>
+          <p>Testing is layered: unit tests, integration tests, and end-to-end (E2E) tests. Aim for fast unit tests and targeted integration tests; reserve E2E for critical user flows.</p>
+          <p>Guidelines:</p>
+          <ul>
+            <li>Unit tests: fast, deterministic, and isolated. Mock external dependencies.</li>
+            <li>Integration tests: exercise real components (databases, queues) in CI sandbox environments.</li>
+            <li>E2E tests: cover core user journeys; run nightly or on release candidates to limit flakiness.</li>
+            <li>Use test coverage as a guide, not a goal. Focus on meaningful assertions and edge cases.</li>
+          </ul>
+          <p>Example test command (Node.js):</p>
+          <pre><code>npm test
+# or
+CI=true npm run test:integration</code></pre>
+        </section>
+
+        <section id="cicd">
+          <h3 class="section">Continuous Integration and Delivery</h3>
+          <p>CI runs on every push and PR. Typical CI pipeline stages:</p>
+          <ol>
+            <li>Install dependencies and run linters.</li>
+            <li>Run unit tests and static analysis.</li>
+            <li>Build artifacts and run integration tests in sandbox.</li>
+            <li>Publish artifacts to internal registry on merge to <code>main</code> or release branches.</li>
+          </ol>
+          <p>CD: Deployments are automated with gated approvals for production. Use feature flags for gradual rollouts and canary deployments to reduce risk.</p>
+          <p>Rollback plan: every release must include a documented rollback procedure and a health-check-based automatic rollback where feasible.</p>
+        </section>
+
+        <section id="infra">
+          <h3 class="section">Infrastructure as Code</h3>
+          <p>All infrastructure is defined and versioned in code (Terraform, CloudFormation, or Pulumi). Principles:</p>
+          <ul>
+            <li>Keep environment parity between staging and production.</li>
+            <li>Use modules to encapsulate reusable patterns (VPCs, databases, IAM roles).</li>
+            <li>Store secrets in a managed secret store and reference them at runtime; never commit secrets to source control.</li>
+            <li>Review infrastructure changes via PRs and run plan/apply in CI with approvals for production changes.</li>
+          </ul>
+          <p>Example Terraform workflow:</p>
+          <pre><code>terraform init
+terraform plan -out=plan.tfplan
+# Review plan in CI
+terraform apply plan.tfplan</code></pre>
+        </section>
+
+        <section id="security">
+          <h3 class="section">Security Practices</h3>
+          <p>Security is integrated into the development lifecycle. Key practices:</p>
+          <ul>
+            <li>Perform threat modeling for new features that handle sensitive data.</li>
+            <li>Run automated SAST and dependency vulnerability scans in CI.</li>
+            <li>Enforce least privilege for service accounts and IAM roles.</li>
+            <li>Require HTTPS/TLS for all external endpoints and validate certificates.</li>
+            <li>Rotate credentials and keys regularly; use short-lived tokens where possible.</li>
+          </ul>
+          <p>Incident response: maintain an incident playbook with roles, communication channels, and post-incident review steps.</p>
+        </section>
+
+        <section id="observability">
+          <h3 class="section">Observability and Monitoring</h3>
+          <p>Production systems must be observable. We track metrics, logs, and traces to detect and diagnose issues quickly.</p>
+          <ul>
+            <li>Metrics: instrument key business and system metrics (error rate, latency, throughput).</li>
+            <li>Logging: structured logs with request IDs and context; centralize logs in a searchable store.</li>
+            <li>Tracing: propagate trace IDs across services to follow request flows.</li>
+            <li>Alerts: configure actionable alerts with runbooks and avoid noisy thresholds.</li>
+          </ul>
+          <p>Example alert: "P95 latency > 1s for 5 minutes" with a runbook that includes steps to identify recent deploys, check downstream services, and roll back if necessary.</p>
+        </section>
+
+        <section id="release">
+          <h3 class="section">Release Management</h3>
+          <p>Releases follow a predictable cadence and clear ownership. For each release:</p>
+          <ul>
+            <li>Create a release note summarizing changes, migration steps, and known issues.</li>
+            <li>Tag the release in source control and publish artifacts to the registry.</li>
+            <li>Coordinate with stakeholders for database migrations and breaking changes.</li>
+            <li>Use feature flags and staged rollouts to minimize user impact.</li>
+          </ul>-release: run smoke tests, monitor key metrics, and hold a short post-mortem for any incidents.</p>
+        </section>
+
+        <section id="onboarding">
+          <h3 class="section">Onboarding & Contribution</h3>
+          <p>New engineers should be productive quickly. Onboarding checklist:</p>
+          <ol>
+            <li>Complete access requests (repo, CI, cloud console, secret manager).</li>
+            <li>Run the local development environment and a sample integration.</li>
+            <li>Read the architecture overview and the project's README and CONTRIBUTING.md.</li>
+            <li>Pair with a buddy for the first feature or bug fix.</li>
+          </ol>
+          <p>Contribution guidelines:</p>
+          <ul>
+            <li>Follow the project's coding standards and linting rules.</li>
+            <li>Write tests for new behavior and update documentation.</li>
+            <li>Keep PRs focused and include a clear description and test plan.</li>
+          </ul>
+        </section>
+
+        <section id="troubleshooting">
+          <h3 class="section">Troubleshooting & Best Practices</h3>
+          <p>When debugging production issues, follow a structured approach:</p>
+          <ol>
+            <li>Gather context: request IDs, timestamps, recent deploys, and error traces.</li>
+            <li>Reproduce in staging if possible; avoid making untested changes in production.</li>
+            <li>Use feature flags to isolate or disable problematic functionality.</li>
+            <li>Document the root cause and remediation steps in the incident tracker.</li>
+          </ol>
+          <p>Best practices summary:</p>
+          <ul>
+            <li>Automate repetitive tasks and keep manual steps documented.</li>
+            <li>Prefer observability and small releases over large, risky deployments.</li>
+            <li>Invest in developer experience: fast tests, clear logs, and reliable local environments.</li>
+          </ul>
+        </section>
+
+        <section id="contact">
+          <h3 class="section">Contact & Resources</h3>
+          <p>For development support, platform access, or to request a DPA or security documentation, contact the engineering operations team:</p>
+          <p class="muted-note">Email: <span style="color:var(--subtle)">jobmulisa@gmail.com</span></p>
+          <p class="muted-note">Status & docs: internal developer portal (project-specific links and runbooks)</p>
+          <a class="cta" href="#overview">Open Developer Portal</a>
+        </section>
+
+        <footer>
+          <div class="muted">© IB Tech</div>
+          <div class="muted">Last updated: April 6, 2026</div>
+        </footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

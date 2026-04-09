@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IB Tech — How We Design Websites</title>
+  <meta name="description" content="A visually rich presentation of IB Tech's web design approach — process, principles, and examples." />
+  <style>
+    :root{
+      --bg-1:#071226;
+      --bg-2:#081a2e;
+      --card:#0b1228;
+      --muted:#9fb0c6;
+      --accent-1:#60a5fa;
+      --accent-2:#7ee7b0;
+      --accent-3:#f472b6;
+      --text:#eaf6ff;
+      --glass: rgba(255,255,255,0.03);
+      --radius:18px;
+      --max-width:1200px;
+      --gap:22px;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-1),var(--bg-2));color:var(--text);-webkit-font-smoothing:antialiased}
+    .wrap{max-width:var(--max-width);margin:36px auto;padding:28px;display:grid;gap:var(--gap)}
+    header{display:flex;align-items:center;gap:18px}
+    .logo{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#042;box-shadow:0 18px 60px rgba(2,6,23,0.6)}
+    h1{font-size:22px;margin:0}
+    .subtitle{color:var(--muted);font-size:14px;margin-top:6px}
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:24px;
+      align-items:center;
+    }
+
+    .hero-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      padding:22px;border-radius:var(--radius);box-shadow:0 20px 80px rgba(2,6,23,0.6);
+    }
+
+    .lead{font-size:16px;color:var(--text);line-height:1.6;margin-bottom:12px}
+    .kicker{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted);font-size:13px;margin-bottom:12px}
+
+    .visual{
+      width:100%;height:320px;border-radius:14px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.04);
+      background:linear-gradient(135deg, rgba(96,165,250,0.06), rgba(126,231,176,0.04));
+      display:flex;align-items:center;justify-content:center;
+    }
+    .visual img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.02) saturate(1.05);transition:transform .9s cubic-bezier(.2,.9,.2,1)}
+    .visual:hover img{transform:scale(1.03)}
+
+    main{display:grid;grid-template-columns:1fr;gap:18px;margin-top:6px}
+    .grid-2{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.03);padding:18px;border-radius:14px}
+    .paragraph{margin:14px 0;line-height:1.75;font-size:15.5px;color:var(--text);padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.002), rgba(255,255,255,0.001));border-left:4px solid rgba(255,255,255,0.02);transition:transform .25s ease,box-shadow .25s ease}
+    .paragraph:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(2,6,23,0.45)}
+
+    .aside{display:flex;flex-direction:column;gap:12px}
+    .thumb{height:180px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+    .process{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+    .step{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid rgba(255,255,255,0.02)}
+    .step h4{margin:0 0 6px 0;font-size:14px}
+    .step p{margin:0;color:var(--muted);font-size:13px}
+
+    .cta{display:inline-block;margin-top:12px;padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,var(--accent-1),var(--accent-3));color:#042;font-weight:700;text-decoration:none}
+
+    footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--muted);font-size:13px}
+
+    /* subtle floating shapes */
+    .bg-shape{
+      position:absolute;right:-80px;top:-80px;width:320px;height:320px;opacity:0.06;filter:blur(28px);
+      background:radial-gradient(circle at 30% 30%, rgba(96,165,250,0.9), transparent 40%), radial-gradient(circle at 70% 70%, rgba(126,231,176,0.9), transparent 40%);
+      transform:rotate(12deg);
+      border-radius:40%;
+      animation:floaty 10s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes floaty{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-18px) rotate(6deg)}100%{transform:translateY(0) rotate(0)}}
+
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr;gap:14px}
+      .grid-2{grid-template-columns:1fr;gap:12px}
+      .visual{height:220px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">IB</div>
+      <div>
+        <h1>IB Tech — How We Design Websites</h1>
+        <div class="subtitle">A concise, visual walkthrough of our design philosophy and process</div>
+      </div>
+    </header>
+
+    <div class="hero">
+      <div class="hero-card">
+        <div class="kicker">Design • UX • Frontend • Performance</div>
+        <div class="lead">We craft websites that balance beauty, clarity, and performance. Below are ten focused paragraphs that explain our approach — from discovery to launch and beyond — accompanied by curated visuals you can replace with your own images (filenames shown in the code).</div>
+        <a class="cta" href="#content">Explore the approach</a>
+      </div>
+
+      <div class="visual" aria-hidden="false">
+        <div class="bg-shape" aria-hidden="true"></div>
+        <!-- Replace 'hero.jpg' with your hero image file -->
+        <img id="heroImage" src="web.png" alt="Design showcase">
+      </div>
+    </div>
+
+    <main id="content">
+      <div class="grid-2">
+        <div class="card">
+          <!-- Ten paragraphs describing how we design websites -->
+          <div class="paragraph"><strong>1. Discovery and context.</strong> We begin by listening: stakeholder goals, user needs, brand voice, and technical constraints. Discovery sessions and lightweight research reveal the problem space so design decisions are grounded in real context, not assumptions.</div>
+
+          <div class="paragraph"><strong>2. Strategy and information architecture.</strong> We translate goals into a clear strategy and information architecture. Sitemaps, user journeys, and prioritized content models ensure the site serves users efficiently and supports business outcomes.</div>
+
+          <div class="paragraph"><strong>3. Interaction and UX design.</strong> Wireframes and interactive prototypes define the structure and behavior of key flows. We focus on clarity, accessibility, and reducing cognitive load so users complete tasks with confidence.</div>
+
+          <div class="paragraph"><strong>4. Visual design and brand expression.</strong> Visual systems — typography, color, spacing, and motion — bring the brand to life. We design components that are beautiful, consistent, and reusable across pages and campaigns.</div>
+
+          <div class="paragraph"><strong>5. Responsive and performance-first front end.</strong> We build responsive layouts and optimize assets for fast load times. Progressive enhancement, critical CSS, and image optimization ensure the site feels instant on every device.</div>
+
+          <div class="paragraph"><strong>6. Accessibility and inclusive design.</strong> Accessibility is integral, not optional. We follow WCAG principles, semantic markup, keyboard navigation, and color contrast checks so the site works for more people.</div>
+
+          <div class="paragraph"><strong>7. Content strategy and editorial design.</strong> Great design supports great content. We help craft concise, scannable copy and design flexible templates that make publishing consistent and efficient.</div>
+
+          <div class="paragraph"><strong>8. Testing, analytics, and iteration.</strong> Usability testing, A/B experiments, and analytics guide continuous improvement. We instrument key metrics and iterate on the highest-impact opportunities first.</div>
+
+          <div class="paragraph"><strong>9. Launch, monitoring, and operations.</strong> Launch is a process: staging validation, rollout plans, monitoring, and rollback strategies. We set up observability and runbooks so incidents are detected and resolved quickly.</div>
+
+          <div class="paragraph"><strong>10. Partnership and growth.</strong> We treat every project as a partnership. Post-launch roadmaps, performance reviews, and feature prioritization keep the product evolving toward measurable business goals.</div>
+        </div>
+
+        <aside class="aside">
+          <div class="card">
+            <h3 style="margin:0 0 8px 0">Project visuals</h3>
+            <div class="thumb"><img id="thumbA" src="webs.png" alt="Process image A"></div>
+            <div class="thumb"><img id="thumbB" src="web.jpg" alt="Process image B"></div>
+
+            <div style="margin-top:12px">
+              <h4 style="margin:0 0 8px 0">Our process at a glance</h4>
+              <div class="process">
+                <div class="step"><h4>Discover</h4><p>Workshops, research, and alignment.</p></div>
+                <div class="step"><h4>Design</h4><p>Wireframes, visuals, and prototypes.</p></div>
+                <div class="step"><h4>Build</h4><p>Accessible, performant front-end.</p></div>
+                <div class="step"><h4>Launch</h4><p>Monitoring, rollouts, and support.</p></div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px" class="meta"></div>
+          </div>
+        </aside>
+      </div>
+
+      <footer>
+        <div>© IB Tech — Web Design</div>
+        <div>Last updated: April 6, 2026</div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Simple graceful image loader: if local file not present, hide gracefully
+    ['heroImage','thumbA','thumbB'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('error', () => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity .6s ease';
+      });
+    });
+
+    // Optional: preload images (filenames shown in code)
+    const IMAGES = {
+      hero: 'hero.jpg',
+      a: 'process-1.jpg',
+      b: 'process-2.jpg'
+    };
+    // If you want to programmatically set sources, uncomment below:
+    // document.getElementById('heroImage').src = IMAGES.hero;
+    // document.getElementById('thumbA').src = IMAGES.a;
+    // document.getElementById('thumbB').src = IMAGES.b;
+  </script>
+</body>
+</html>

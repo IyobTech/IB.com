@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>I-MESOB</title>
+  <link rel="stylesheet" href="students.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app" data-theme="auto">
+    <header class="topbar glass">
+      <div class="brand">
+        <div class="logo">🍽️</div>
+        
+        <h1 data-i18n="appTitle">Students Meal System Controller</h1>
+        <img src="I-MESOB.png" alt="" width="90px"/>
+      </div>
+      <nav class="tabs">
+        <button class="tab active" data-tab="meal" data-i18n="tabMeal">Meal</button>
+        <button class="tab admin-gated" data-tab="register" data-i18n="tabRegister">Register</button>
+        <button class="tab admin-gated" data-tab="students" data-i18n="tabStudents">Students List</button>
+        <button class="tab admin-gated" data-tab="report" data-i18n="tabReport">Report</button>
+        <button class="tab admin-gated" data-tab="settings" data-i18n="tabSettings">Settings</button>
+      </nav>
+      <img src="Ethio.png" alt="Ethio.png" width="100px">
+      <div class="spacer"></div>
+      <button id="quickTheme" class="icon-btn" title="Toggle Theme">🌓</button>
+    </header>
+
+    <main>
+      <!-- MEAL TAB -->
+      <section class="tabpage active" id="tab-meal">
+        <div class="card">
+          <h2 data-i18n="mealTitle">Student Meal Check-In</h2>
+          <p class="muted" data-i18n="mealHint">Enter your 4-digit ID. We’ll show your info (except password), then you’ll confirm with your 10-digit password.</p>
+
+          <form id="meal-id-form" class="grid-compact">
+            <label>
+              <span data-i18n="labelID">4-digit ID</span>
+              <input type="text" inputmode="numeric" maxlength="4" id="meal-id" placeholder="1234" required />
+            </label>
+            <button class="btn" type="submit" data-i18n="btnFind">Find</button>
+          </form>
+
+          <div id="meal-student-card" class="student-card hidden">
+            <div class="student-info">
+              <div><strong data-i18n="labelName">Name:</strong> <span id="meal-student-name">—</span></div>
+              <div><strong data-i18n="labelGrade">Grade:</strong> <span id="meal-student-grade">—</span></div>
+              <div><strong data-i18n="labelID">ID:</strong> <span id="meal-student-id">—</span></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <form id="meal-pass-form" class="grid-compact">
+              <label>
+                <span data-i18n="labelPassword">10-digit Password</span>
+                <input type="password" inputmode="numeric" maxlength="10" id="meal-pass" placeholder="••••••••••" required />
+              </label>
+              <button class="btn primary" type="submit" data-i18n="btnConfirm">Confirm</button>
+              <div class="tries muted" id="tries-left"></div>
+            </form>
+
+            <div id="meal-result" class="result"></div>
+          </div>
+        </div>
+
+        <div class="card subtle">
+          <h3 data-i18n="currentSlotTitle">Current Meal Slot</h3>
+          <div id="slotNow" class="slot-now">—</div>
+          <div class="slots-inline" id="slotsInline"></div>
+          <div class="muted" data-i18n="deviceTimeNote">Based on your device time.</div>
+        </div>
+      </section>
+
+      <!-- REGISTER TAB (ADMIN) -->
+      <section class="tabpage" id="tab-register">
+        <div class="card">
+          <h2 data-i18n="registerTitle">Register New Student</h2>
+          <form id="register-form" class="grid">
+            <label>
+              <span data-i18n="labelName">Name</span>
+              <input type="text" id="reg-name" placeholder="Full name" required />
+            </label>
+            <label>
+              <span data-i18n="labelGrade">Grade</span>
+              <input type="text" id="reg-grade" placeholder="Grade / Class" required />
+            </label>
+            <label>
+              <span data-i18n="labelID">4-digit ID</span>
+              <input type="text" id="reg-id" inputmode="numeric" maxlength="4" placeholder="1234" required />
+            </label>
+            <label>
+              <span data-i18n="labelPassword">10-digit Password</span>
+              <input type="password" id="reg-pass" inputmode="numeric" maxlength="10" placeholder="##########" required />
+            </label>
+            <div class="actions">
+              <button class="btn" type="reset" data-i18n="btnClear">Clear</button>
+              <button class="btn primary" type="submit" data-i18n="btnSave">Save</button>
+            </div>
+          </form>
+          <div id="register-msg" class="result"></div>
+        </div>
+      </section>
+
+      <!-- STUDENTS LIST (ADMIN) -->
+      <section class="tabpage" id="tab-students">
+        <div class="card">
+          <h2 data-i18n="studentsTitle">All Registered Students</h2>
+          <div class="toolbar">
+            <input type="search" id="student-search" placeholder="Search by name, grade, ID…" />
+          </div>
+          <div class="tablewrap">
+            <table class="table" id="students-table">
+              <thead>
+                <tr>
+                  <th data-i18n="thName">Name</th>
+                  <th data-i18n="thGrade">Grade</th>
+                  <th data-i18n="thID">ID</th>
+                  <th data-i18n="thPassword">10-digit Password</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="muted" data-i18n="studentsNote">Shown so the admin can help students who forget their ID or password.</div>
+        </div>
+      </section>
+
+      <!-- REPORT (ADMIN) -->
+      <section class="tabpage" id="tab-report">
+        <div class="card">
+          <h2 data-i18n="reportTitle">Daily Meal Report</h2>
+          <div class="toolbar">
+            <label>
+              <span data-i18n="labelDate">Date</span>
+              <input type="date" id="report-date" />
+            </label>
+            <button id="report-refresh" class="btn" data-i18n="btnRefresh">Refresh</button>
+          </div>
+
+          <div class="tablewrap">
+            <table class="table" id="report-table">
+              <thead>
+                <tr>
+                  <th data-i18n="thName">Name</th>
+                  <th data-i18n="thGrade">Grade</th>
+                  <th data-i18n="thID">ID</th>
+                  <th data-i18n="thBreakfast">Breakfast</th>
+                  <th data-i18n="thLunch">Lunch</th>
+                  <th data-i18n="thDinner">Dinner</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="muted" data-i18n="reportNote">☑️ eaten, ❌ not eaten. Pick any date to view up to a year (and beyond).</div>
+        </div>
+      </section>
+
+      <!-- SETTINGS (ADMIN) -->
+      <section class="tabpage" id="tab-settings">
+        <div class="card">
+          <h2 data-i18n="settingsTitle">Settings</h2>
+
+          <div class="settings-grid">
+            <fieldset>
+              <legend data-i18n="legendTimeFrames">Time Frames</legend>
+              <div class="timegrid">
+                <div>
+                  <h4 data-i18n="breakfast">Breakfast</h4>
+                  <label><span data-i18n="labelStart">Start</span><input type="time" id="bf-start"></label>
+                  <label><span data-i18n="labelEnd">End</span><input type="time" id="bf-end"></label>
+                </div>
+                <div>
+                  <h4 data-i18n="lunch">Lunch</h4>
+                  <label><span data-i18n="labelStart">Start</span><input type="time" id="lu-start"></label>
+                  <label><span data-i18n="labelEnd">End</span><input type="time" id="lu-end"></label>
+                </div>
+                <div>
+                  <h4 data-i18n="dinner">Dinner</h4>
+                  <label><span data-i18n="labelStart">Start</span><input type="time" id="di-start"></label>
+                  <label><span data-i18n="labelEnd">End</span><input type="time" id="di-end"></label>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend data-i18n="legendAdminPin">Admin PIN</legend>
+              <label><span data-i18n="labelOldPin">Old 4-digit PIN</span><input type="password" id="old-pin" inputmode="numeric" maxlength="4"></label>
+              <label><span data-i18n="labelNewPin">New 4-digit PIN</span><input type="password" id="new-pin" inputmode="numeric" maxlength="4"></label>
+              <button id="save-pin" class="btn" data-i18n="btnChangePin">Change PIN</button>
+              <div id="pin-msg" class="result"></div>
+            </fieldset>
+
+            <fieldset>
+              <legend data-i18n="legendTheme">Theme</legend>
+              <select id="theme-select">
+                <option value="auto" data-i18n="themeAuto">Auto</option>
+                <option value="light" data-i18n="themeLight">Light</option>
+                <option value="dark" data-i18n="themeDark">Dark</option>
+              </select>
+            </fieldset>
+
+            <fieldset>
+              <legend data-i18n="legendLanguage">Language</legend>
+              <select id="lang-select">
+                <option value="en">English</option>
+                <option value="om">Afaan Oromoo</option>
+                <option value="am">አማርኛ</option>
+              </select>
+            </fieldset>
+          </div>
+
+          <div class="actions end">
+            <button id="save-settings" class="btn primary" data-i18n="btnSaveSettings">Save Settings</button>
+            <div id="settings-msg" class="result"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ADMIN GATE MODAL -->
+    <dialog id="admin-gate">
+      <form method="dialog" id="admin-gate-form" class="gate">
+        <h3 data-i18n="adminGateTitle">Admin Access</h3>
+        <p class="muted" data-i18n="adminGateText">Enter the 4-digit admin PIN to open this section.</p>
+        <input type="password" id="admin-pin-input" inputmode="numeric" maxlength="4" placeholder="••••" autofocus required />
+        <div class="actions">
+          <button class="btn" value="cancel" data-i18n="btnCancel">Cancel</button>
+          <button class="btn primary" value="ok" id="admin-gate-ok" data-i18n="btnUnlock">Unlock</button>
+        </div>
+        <div id="admin-gate-msg" class="result"></div>
+      </form>
+    </dialog>
+
+    <footer class="muted center">
+      <span>&copy; <span id="year"></span> — <span data-i18n="footerNote">Offline, private. Data stored in your browser.</span></span>
+      <br>
+            <a href="index.html"><button>⬅ Back to Main</button></a>
+    </footer>
+  </div>
+
+  <script src="students.js"></script>
+</body>
+</html>

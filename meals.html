@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I-MESOB</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="Ethio"> <img src="Ethio.png" alt="" width="100px">  </div>
+  <header>
+    <h1 class="shadow-text">WELCOME TO I-MESOB</h1>
+    <nav>
+      <button onclick="showSection('register')">Register</button>
+      <button onclick="showSection('about')">About</button>
+      <button onclick="showSection('settings')">Settings</button>
+    </nav>
+  </header>
+
+  <!-- Registration Section -->
+  <section id="register" class="active">
+    <h2>Register</h2>
+    <form id="registrationForm">
+      <input type="text" id="name" placeholder="Your Name" required>
+      <input type="email" id="email" placeholder="Your Email" required>
+      <button type="submit">Register</button>
+    </form>
+    <div id="registrationMessage"></div>
+    <button id="nextPageBtn" style="display:none;" onclick="goToNextPage()">GO TO IMESOB</button>
+    
+    <p>👉Before registration or for more info click the button "About"</p>
+      <br/>
+    <div class="Meso">
+    <img src="MESOB.png" alt="" width="350px" />  <img src="Ecoder.png" alt="" width="400px"></div>
+  
+  </section>
+
+
+
+
+
+
+  <!-- About Section -->
+  <section id="about">
+    <all>
+     <p1>
+    <h2>About</h2>
+    I-MESOB is a programmed web app that uses for reducing or saving a budget that have payed for paper and the others, additionally it reduces a time; mainly better for it's transparency as well as easily accessible!. <pre>
+    </pre>
+   •This program allows any users/ specially for school stuffs like  <pre>
+</pre> ✓boarding schools <pre></pre>✓Special schools and  <pre></pre>✓Universities (who get a permission from us) to use I-MESOB. <pre></pre>•We will approve users who talked with us, through  social media we have listed.
+    <pre></pre>•Approved users can go to the next page and then use I-Mesob service.</p1>
+    <pre></pre>
+    <y>
+    <h2>PROCESS</h2><pre></pre>
+     ✓Firstly you should enter <strong>your name</strong> and <strong> the email</strong>( becareful Infront of your email add some letters that you would remember) after you touched the register button,YOU WOULD REGISTERED. but keep what you entered as secret.
+     <pre></pre>
+     ✓After registration talk us, and tell to us, the letter or the name of email that you registered. <pre></pre>
+    ✓After those all finished, we will give you the allowance to pass to the next section of our service (I-MESOB). 
+    </y>
+    <pre> </pre>
+    <b>
+      <h2>USES</h2><pre></pre>
+      ★While you start,use of our service you are going to be the owner (Admin),means The person who can control: <pre></pre>•registration<pre></pre>
+      •Student list  <pre></pre>
+      •Report and <pre></pre>
+      •setting is <U>only you.</U>
+      <pre></pre>
+      ♦Only you can register any students: their full name, grade, 4 digit ID number,and 10 digit password for each of students.<pre></pre>♦After all students registered  students will enter their 4 digit ID number and then they will enter 10 digit password then they will get a permission to eat breakfast, lunch or dinner according time frame set uped by you.<pre></pre>♦But if the students enter  wrong 10 digit password they would have a chance until three times.Unless it pass to another student, and the student who forget his 10 digit password can ask the admin(you) to see his/her ID.
+    </b>
+    <z> <pre></pre>
+     <h2> WHAT YOU CAN DO:</h2> <pre></pre>
+      controlling all the service on there even <pre></pre>♦giving or setupping a timeframe,
+    <pre></pre> ♦Changing a language.<pre></pre>
+     in conclusion you are a monitor since you start using I-MESOB.<pre></pre>
+     And If you have a suggestion ,advice or as a feedback give us through E-Mail.
+    </z> <pre> </pre>
+    <I>
+      <h2>ABOUT US </h2>
+
+   <h5> 💻This program or webapp was prepared for you by <strong>Iyob Mulisa</strong> from <em>Ambo Ifa Boru Special Boarding Secondary School</em> Inaugurated in sept 27, 2025. constructed nearly for 3 months. </h5>
+   <div class="Iyo">
+      <img src="Iyob.png" alt="" width="150px"/>
+      </div>
+    
+   <h2> SPECIAL THANKS</h2><pre></pre>
+    ♦First, Thanks to God! .<br />
+    ♦secondly, My families thanks for your help in all aspects as much as you can! <br/>
+    <h5>♦Thirdly, Thanks to the P.M of Ethiopia,<strong>Dr Abiy Ahmed </strong>,who introduced 5 mil, E-Coders initiative.Abiy Ahmed launched the "Five Million Ethiopian Coders Initiative," a national program aimed at training youth in digital skills as part of the country's Digital Ethiopia 2025 strategy. This initiative, a joint project with the UAE, provides free online coding courses to empower citizens and foster a digital economy.</h5>   
+    <div class="Abi">
+    <img src="Abiy.png" alt="" width="150px"/> </div>
+    <pre>
+      
+    </pre>
+    <p>
+      CONTACT US <pre></pre> <final>
+      <E-mail> <img src="email.png" alt="" width="30px">E-Mail : <a href="mailto:jobmulisa@gmail.com
+?subject=">
+  Send Email
+</a></E-mail><pre></pre>
+      <Telegram><img src="telegram.png" alt="" width="30px">Telegram account:<a href="https://t.me/@Jobmul_official">Open Telegram</a></Telegram><pre></pre>
+      <LinkedIn><img src="LinkedIn.png" alt="" width="30px">LinkedIn:<a href="https://www.linkedin.com/in/iyob-mulisa-16787937a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">Open my LinkedIn
+</a>
+</a> </LinkedIn>
+      </final>
+    </p>
+    </I>
+    <f>Thank You! For Using Our Service!</f>
+    </all>
+  </section>
+
+  <!-- Settings Section -->
+  <section id="settings">
+    <h2>Admin Settings</h2>
+    <div id="adminLogin">
+      <input type="password" id="adminPassword" placeholder="Enter Admin Password">
+      <button onclick="loginAdmin()">Login</button>
+      <div id="loginMessage"></div>
+    </div>
+
+    <div id="adminPanel" style="display:none;">
+      <h3>Users List</h3>
+      <table id="usersTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Allow</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

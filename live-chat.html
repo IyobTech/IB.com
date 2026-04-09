@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IB Tech — Chat (User) — Editable Name</title>
+  <style>
+    :root{
+      --bg:#071226; --accent:#2563eb; --accent-2:#06b6d4; --text:#eaf6ff; --muted:#9fb0c6;
+      --card:rgba(255,255,255,0.02); --radius:12px; --max-width:900px;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#041022);color:var(--text)}
+    .wrap{max-width:var(--max-width);margin:28px auto;padding:18px}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700}
+    h1{font-size:18px;margin:0}
+    .card{background:var(--card);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .top-row{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+    .name-input{display:flex;gap:8px;align-items:center}
+    input.name{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text);min-width:180px}
+    .messages{height:52vh;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+    .msg{max-width:78%;padding:10px;border-radius:10px}
+    .msg.user{align-self:flex-end;background:linear-gradient(180deg,#0b2a3a,#04202a)}
+    .msg.admin{align-self:flex-start;background:linear-gradient(180deg,#0f1724,#071226)}
+    .meta{font-size:12px;color:var(--muted);margin-top:6px}
+    .composer{display:flex;gap:8px;margin-top:12px}
+    textarea{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text);min-height:56px;resize:vertical}
+    button{padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    .info{margin-top:8px;color:var(--muted);font-size:13px}
+    .idbox{font-family:monospace;background:rgba(255,255,255,0.01);padding:6px 8px;border-radius:8px;display:inline-block}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">IB</div>
+      <div>
+        <h1>IB Tech — Live Chat</h1>
+        <div class="small">Edit your display name — admin will see it with your messages.</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="top-row">
+        <div class="name-input">
+          <label for="name" class="small">Your name</label>
+          <input id="name" class="name" type="text" placeholder="Enter your name">
+          <button id="saveNameBtn" title="Save name">Save</button>
+        </div>
+        <div style="margin-left:auto" class="small" id="status">Initializing…</div>
+      </div>
+
+      <div id="messages" class="messages" aria-live="polite"></div>
+
+      <div class="composer">
+        <textarea id="input" placeholder="Type your message here"></textarea>
+        <button id="sendBtn">Send</button>
+      </div>
+
+      <div class="info" style="margin-top:10px">
+        <span>Conversation ID: <span id="convId" class="idbox">—</span></span>
+        <span style="margin-left:12px">Polling: <span id="polling" class="small">off</span></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*
+      IMPORTANT: This example writes the master key directly from client-side JS to the JSON bin.
+      That is insecure for production. Use a server-side proxy for real deployments.
+    */
+    const MASTER_KEY = '$2a$10$svnhQL3Pt/YL1xljam4at.8jA8sEzr28CUe2VG57uQIKHcH1EPwcq';
+    const BIN_ID = '69d416c0aaba882197ce78fb';
+    const JSONBIN_BASE = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+    const POLL_INTERVAL = 2000;
+
+    const statusEl = document.getElementById('status');
+    const messagesEl = document.getElementById('messages');
+    const inputEl = document.getElementById('input');
+    const sendBtn = document.getElementById('sendBtn');
+    const convIdEl = document.getElementById('convId');
+    const pollingEl = document.getElementById('polling');
+    const nameInput = document.getElementById('name');
+    const saveNameBtn = document.getElementById('saveNameBtn');
+
+    let conversationId = null;
+    let pollTimer = null;
+    let lastKnownMessageCount = 0;
+    let localName = localStorage.getItem('ibchat_name') || '';
+
+    nameInput.value = localName;
+
+    async function fetchBin() {
+      const res = await fetch(JSONBIN_BASE + '/latest', {
+        method: 'GET',
+        headers: { 'X-Master-Key': MASTER_KEY }
+      });
+      if (!res.ok) throw new Error('Fetch bin failed: ' + res.status);
+      const payload = await res.json();
+      return payload.record || payload;
+    }
+
+    async function putBin(data, retries = 3) {
+      try {
+        const res = await fetch(JSONBIN_BASE, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('Put bin failed: ' + res.status);
+        return await res.json();
+      } catch (err) {
+        if (retries > 0) {
+          await new Promise(r => setTimeout(r, 200 + Math.random() * 300));
+          return putBin(data, retries - 1);
+        }
+        throw err;
+      }
+    }
+
+    async function createConversation(initialText) {
+      statusEl.textContent = 'Creating conversation…';
+      try {
+        const bin = await fetchBin().catch(() => ({ conversations: [] }));
+        if (!Array.isArray(bin.conversations)) bin.conversations = [];
+        const id = 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+        const conv = {
+          id,
+          createdAt: new Date().toISOString(),
+          messages: [
+            { id: 'm_' + Date.now() + '_u', sender: 'user', senderName: localName || 'Anonymous', text: initialText, ts: Date.now() }
+          ],
+          meta: { name: localName || 'Anonymous', userAgent: navigator.userAgent }
+        };
+        bin.conversations.push(conv);
+        await putBin(bin);
+        conversationId = id;
+        localStorage.setItem('ibchat_conv', conversationId);
+        convIdEl.textContent = conversationId;
+        statusEl.textContent = 'Conversation created';
+        renderMessages(conv.messages);
+        startPolling();
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = 'Error creating conversation: ' + err.message;
+      }
+    }
+
+    async function appendMessage(convId, sender, text) {
+      try {
+        const bin = await fetchBin();
+        if (!Array.isArray(bin.conversations)) bin.conversations = [];
+        const conv = bin.conversations.find(c => c.id === convId);
+        if (!conv) throw new Error('Conversation not found');
+        conv.meta = conv.meta || {};
+        if (localName && conv.meta.name !== localName) conv.meta.name = localName;
+        const msg = { id: 'm_' + Date.now() + '_' + (sender === 'user' ? 'u' : 'a'), sender, senderName: sender === 'user' ? (localName || 'Anonymous') : undefined, text, ts: Date.now() };
+        conv.messages.push(msg);
+        await putBin(bin);
+        return conv.messages;
+      } catch (err) {
+        console.error('appendMessage error', err);
+        throw err;
+      }
+    }
+
+    function renderMessages(messages) {
+      messagesEl.innerHTML = '';
+      messages.forEach(m => {
+        const d = document.createElement('div');
+        d.className = 'msg ' + (m.sender === 'user' ? 'user' : 'admin');
+        const nameLine = m.sender === 'user' ? `<div style="font-weight:600;margin-bottom:6px">${escapeHtml(m.senderName || (m.sender === 'user' ? (localName || 'You') : 'Admin'))}</div>` : '';
+        d.innerHTML = `${nameLine}<div>${escapeHtml(m.text)}</div><div class="meta">${m.sender} • ${new Date(m.ts).toLocaleString()}</div>`;
+        messagesEl.appendChild(d);
+      });
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      lastKnownMessageCount = messages.length;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]).replace(/\n/g,'<br>');
+    }
+
+    async function pollOnce() {
+      if (!conversationId) return;
+      try {
+        const bin = await fetchBin();
+        const conv = (bin && Array.isArray(bin.conversations)) ? bin.conversations.find(c => c.id === conversationId) : null;
+        if (conv) {
+          if (conv.meta && conv.meta.name && conv.meta.name !== localName) {
+            localName = conv.meta.name;
+            nameInput.value = localName;
+            localStorage.setItem('ibchat_name', localName);
+          }
+          if ((conv.messages || []).length !== lastKnownMessageCount) {
+            renderMessages(conv.messages || []);
+          }
+        }
+      } catch (err) {
+        console.warn('poll error', err);
+      }
+    }
+
+    function startPolling() {
+      if (pollTimer) return;
+      pollingEl.textContent = 'on';
+      pollTimer = setInterval(pollOnce, POLL_INTERVAL);
+      pollOnce();
+    }
+
+    function stopPolling() {
+      if (!pollTimer) return;
+      clearInterval(pollTimer);
+      pollTimer = null;
+      pollingEl.textContent = 'off';
+    }
+
+    async function saveName() {
+      localName = nameInput.value.trim() || 'Anonymous';
+      localStorage.setItem('ibchat_name', localName);
+      statusEl.textContent = 'Name saved locally';
+      if (conversationId) {
+        try {
+          const bin = await fetchBin();
+          if (!Array.isArray(bin.conversations)) bin.conversations = [];
+          const conv = bin.conversations.find(c => c.id === conversationId);
+          if (conv) {
+            conv.meta = conv.meta || {};
+            conv.meta.name = localName;
+            await putBin(bin);
+            statusEl.textContent = 'Name updated on conversation';
+            if (conv.messages) renderMessages(conv.messages);
+          }
+        } catch (err) {
+          console.warn('Failed to update name on bin', err);
+          statusEl.textContent = 'Saved locally (failed to update server)';
+        }
+      }
+    }
+
+    sendBtn.addEventListener('click', async () => {
+      const text = inputEl.value.trim();
+      if (!text) return;
+      sendBtn.disabled = true;
+      try {
+        if (!conversationId) {
+          await createConversation(text);
+        } else {
+          const messages = await appendMessage(conversationId, 'user', text);
+          renderMessages(messages);
+        }
+        inputEl.value = '';
+      } catch (err) {
+        alert('Failed to send: ' + err.message);
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+
+    saveNameBtn.addEventListener('click', saveName);
+
+    (async function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlConv = urlParams.get('conv');
+      const savedConv = localStorage.getItem('ibchat_conv');
+      conversationId = urlConv || savedConv || null;
+      if (conversationId) {
+        convIdEl.textContent = conversationId;
+        statusEl.textContent = 'Resuming conversation…';
+        try {
+          await pollOnce();
+          startPolling();
+          statusEl.textContent = 'Connected';
+        } catch (err) {
+          statusEl.textContent = 'Connected (could not load conversation)';
+        }
+      } else {
+        statusEl.textContent = 'Ready — start a new conversation';
+      }
+    })();
+
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IB Tech — Development FAQ</title>
+  <style>
+    :root{
+      --bg:#071226;
+      --card:#0b1228;
+      --muted:#9fb0c6;
+      --accent:#2563eb;
+      --accent-2:#06b6d4;
+      --text:#eaf6ff;
+      --subtle:#b7c9d9;
+      --radius:12px;
+      --max-width:980px;
+      --gap:18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#041022 140%);color:var(--text);-webkit-font-smoothing:antialiased}
+    .wrap{max-width:var(--max-width);margin:36px auto;padding:28px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;box-shadow:0 8px 28px rgba(2,6,23,0.6);flex:0 0 56px}
+    h1{font-size:20px;margin:0}
+    .muted{color:var(--muted);font-size:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:22px;border-radius:var(--radius);box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    .grid{display:grid;grid-template-columns:1fr;gap:18px}
+    details{background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.03);padding:12px;border-radius:10px;margin:10px 0}
+    summary{cursor:pointer;font-weight:600;color:var(--text);outline:none}
+    details[open]{background:linear-gradient(90deg, rgba(37,99,235,0.06), rgba(6,182,212,0.03))}
+    .answer{margin-top:8px;color:var(--subtle);line-height:1.6;font-size:15px}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted);font-size:13px;margin-right:8px}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted);font-size:13px}
+    .search{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.01);color:var(--text);margin-bottom:12px}
+    .small{font-size:13px;color:var(--muted)}
+    footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+    @media (max-width:640px){.wrap{padding:18px;margin:18px auto}.logo{width:48px;height:48px}}
+  </style>
+  <script>
+    // Simple client-side filter for FAQ search
+    function filterFAQ() {
+      const q = document.getElementById('faq-search').value.toLowerCase().trim();
+      const items = document.querySelectorAll('details');
+      items.forEach(d => {
+        const text = (d.querySelector('summary').innerText + ' ' + d.querySelector('.answer').innerText).toLowerCase();
+        d.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('faq-search');
+      if (input) input.addEventListener('input', filterFAQ);
+    });
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">IB</div>
+      <div>
+        <h1>IB Tech — Development FAQ</h1>
+        <div class="muted">Answers to common development, deployment, and operational questions</div>
+      </div>
+    </header>
+
+    <main class="card">
+      <input id="faq-search" class="search" placeholder="Search FAQs (keywords, endpoints, errors)..." aria-label="Search FAQs">
+
+      <div class="grid" role="list">
+        <details open>
+          <summary>How do I get started with a local development environment?</summary>
+          <div class="answer">
+            Follow the project's README: clone the repo, install dependencies, and run the local bootstrap script. Typical steps:
+            <ul>
+              <li>Install Node.js (LTS) and Docker for services.</li>
+              <li>Run <code>cp .env.example .env</code> and set required variables.</li>
+              <li>Start services with <code>docker-compose up</code> or <code>npm run dev</code>.</li>
+              <li>Run migrations and seed data if applicable: <code>npm run migrate</code>.</li>
+            </ul>
+            If you hit issues, include logs and the output of <code>npm run doctor</code> when contacting devops.
+          </div>
+        </details>
+
+        <details>
+          <summary>What is the branching and release strategy?</summary>
+          <div class="answer">
+            IB Tech uses a pragmatic model: <code>main</code> is always deployable. Feature work happens on short-lived <code>feature/*</code> branches. Release branches (<code>release/x.y</code>) are used for stabilization. Hotfixes use <code>hotfix/*</code> and are merged back to <code>main</code> and release branches. Tag releases and publish artifacts; use feature flags for risky changes.
+          </div>
+        </details>
+
+        <details>
+          <summary>What are the CI requirements for pull requests?</summary>
+          <div class="answer">
+            Every PR must pass automated, unit tests, and security scans. Required approvals depend on risk: one reviewer for small fixes, two for major changes. Include a clear description, test plan, and link to related tickets. Merge only after CI passes and required approvals are present.
+          </div>
+        </details>
+
+        <details>
+          <summary>How should I write and run tests?</summary>
+          <div class="answer">
+            Follow the testing pyramid: fast unit tests, targeted integration tests, and limited E2E tests for critical flows. Use mocks for external services in unit tests. Run tests locally with and integration tests in CI against sandbox environments. Keep tests deterministic and avoid flaky assertions.
+          </div>
+        </details>
+
+        <details>
+          <summary>How do I authenticate API requests in development and production?</summary>
+          <div class="answer">
+            Use scoped API keys for server-to-server calls and OAuth 2.0 for user-authorized flows. Store secrets in environment variables or a secrets manager (Vault, AWS Secrets Manager). Never commit keys to source control. Rotate keys regularly and use separate keys for sandbox          </div>
+        </details>
+
+        <details>
+          <summary>What is the recommended approach for database migrations?</summary>
+          <div class="answer">
+            Use a migration tool (Flyway, Liquibase, or framework-native migrations). Keep migrations small and reversible when possible. Run migrations in CI against a staging environment and include a rollback plan. Coordinate schema changes that require application changes with feature flags and phased </div>
+        </details>
+
+        <details>
+          <summary>How do we handle secrets and configuration?</summary>
+          <div class="answer">
+            Store secrets in a managed secret store and inject them at runtime. Use environment (sandbox, staging, production). For local development, use a secure local secret store or a developer-only vault. Audit access to secrets and enforce least privilege.
+          </div>
+        </details>
+
+        <details>
+          <summary>What are our observability expectations?</summary>
+         
+            Instrument services with metrics (latency, error rate, throughput), structured logs with request IDs, and distributed tracing. Configure actionable alerts with runbooks. Use dashboards to track SLOs and monitor for regressions after deploys. Correlate logs, traces faster root cause analysis.
+          </div>
+        </details>
+
+        <details>
+          <summary>How do I test and secure webhooks?</summary>
+          <div class="answer">
+            Use a tunneling tool (ngrok) for local testing. Verify webhook signatures using the shared secret and reject requests with invalid signatures. Implement idempotency for webhook handlers and log request IDs for troubleshooting. Retry logic should be exponential with jitter.
+          </div>
+        </details>
+
+        <details>
+          <summary>What is the recommended CI/CD pipeline for deployments?</summary>
+          <div class="answer">
+            CI should run linting, tests, and security scans. On merge to <code>main</code>, build artifacts and run integration tests in staging. CD should support gated approvals for production, canary or blue/green deployments, and automatic rollback based on health checks. Use feature flags for gradual exposure.
+         </details>
+
+        <details>
+          <summary>How do we manage dependencies and vulnerabilities?</summary>
+          <div class="answer">
+            Keep dependencies up to date and run scans in CI. Use tools like Dependabot or Renovate to open PRs for upgrades. For critical vulnerabilities, follow the incident process: patch, test, and deploy with priority. Maintain a policy for acceptable risk and required          </div>
+        </details>
+
+        <details>
+          <summary>What are the performance and load testing guidelines?</summary>
+          <div class="answer">
+            Define performance goals (P95, P99 latency, throughput). Run load tests in an environment that mirrors production. Use realistic traffic patterns and data volumes. Identify bottlenecks, optimize queries and caching, and validate autoscaling behavior. Include performance tests in release criteria for major features.
+          </div>
+         <details>
+          <summary>How do we handle incident response and postmortems?</summary>
+          <div class="answer">
+            Follow the incident playbook: detect, triage, mitigate, and communicate. Assign an incident commander, capture timelines, and preserve evidence. After resolution, run a blameless postmortem documenting root cause, impact, remediation, and action items. Track action items to completion and share learnings.
+          </div>
+        </details>
+
+        <details>
+          <summary>What are the security best practices developers must follow?</summary>
+          <div class="answer">
+            Apply least privilege, validate inputs, use parameterized queries, enforce HTTPS, and run SAST and dependency scans. Perform threat modeling for sensitive features and require security reviews for high-risk changes. Report suspected vulnerabilities to the security team immediately.
+          </div>
+        </details>
+
+        <details>
+          <summary>How do I request access, resources, or production credentials?</summary>
+          <div class="answer">
+            Submit an access request through the internal access management system with justification and duration. Requests should include the minimum privileges required. For production credentials, follow the approval workflow and use short-lived credentials where possible. All access is audited.
+          </div>
+        </details>
+
+        <details>
+          <summary>What should I include when opening a support ticket?</summary>
+          <div class="answer">
+            Provide a concise summary, reproduction steps, environment (sandbox/staging/prod), request or trace IDs, timestamps, and relevant logs or screenshots. Indicate severity and business impact. For urgent incidents, escalate via the on-call channel and include the incident commander.
+          </div>
+
+        <details>
+          <summary>How do we handle backward-incompatible API changes?</summary>
+          <div class="answer">
+            Communicate breaking changes well in advance via release notes and deprecation schedules. Provide migration guides and maintain the old API version for a defined deprecation window. Use semantic versioning and coordinate with integrators to minimize disruption.
+          </div>
+        </details>
+
+        <details>
+          <summary>Where can I find coding standards and linters configuration?</summary>
+          <div class="answer">
+            Coding standards and linter configs live in the repository root (e.g., <code>.eslintrc</code>, <code>prettier.config.js</code>). Follow the style guide in CONTRIBUTING.md. CI enforces linting; fix issues locally before opening a PR to avoid CI </div>
+        </details>
+
+        <details>
+          <summary>How do I contribute documentation or update runbooks?</summary>
+          <div class="answer">
+            Documentation is versioned alongside against the docs or runbook repo with clear changes and examples. Include reviewers who own the area. For urgent runbook updates, follow the emergency update process and notify the on-call team.
+          </div>
+        </details>
+
+        <details>
+          <summary>Who do I contact for developer support or platform issues?</summary>
+          <div class="answer">
+            For developer support, email <span class="small">devops@ibtech.com</span> or open a ticket in the internal support portal. For production incidents, use the on-call rotation and the incident channel. Include project ID, request IDs, and a short summary to speed triage.
+          </div>
+        </details>
+      </div>
+
+      <div class="meta">
+        <div class="small">If your question isn't listed, contact developer support with details and we'll add a canonical answer.</div>
+        <div class="small">Last updated: April 6, 2026</div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="muted">© IB Tech</div>
+      <div class="muted">Developer resources • Policies</div>
+    </footer>
+  </div>
+</body>
+</html>

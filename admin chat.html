@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IB Tech — Admin Console (User Names)</title>
+  <style>
+    :root{
+      --bg:#071226; --accent:#2563eb; --accent-2:#06b6d4; --text:#eaf6ff; --muted:#9fb0c6;
+      --card:rgba(255,255,255,0.02); --radius:12px; --max-width:1100px;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#041022);color:var(--text)}
+    .wrap{max-width:var(--max-width);margin:20px auto;padding:18px}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700}
+    h1{font-size:18px;margin:0}
+    .layout{display:grid;grid-template-columns:320px 1fr;gap:16px}
+    .panel{background:var(--card);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .conv-list{max-height:64vh;overflow:auto}
+    .conv-item{padding:10px;border-radius:8px;margin-bottom:8px;background:rgba(255,255,255,0.01);cursor:pointer}
+    .conv-item:hover{background:rgba(255,255,255,0.02)}
+    .messages{height:56vh;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+    .msg{max-width:78%;padding:10px;border-radius:10px}
+    .msg.user{align-self:flex-start;background:linear-gradient(180deg,#0b2a3a,#04202a)}
+    .msg.admin{align-self:flex-end;background:linear-gradient(180deg,#0f1724,#071226)}
+    textarea{width:100%;min-height:80px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)}
+    button{padding:10px 12px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;cursor:pointer}
+    .meta{font-size:12px;color:var(--muted)}
+    .user-name{font-weight:700;color:var(--text)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">IB</div>
+      <div>
+        <h1>IB Tech — Admin Console</h1>
+        <div class="meta">This console reads the user's display name from conversation meta and shows it.</div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="panel">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button id="refreshBtn">Refresh</button>
+          <button id="newConvBtn">Create Test</button>
+        </div>
+        <div class="conv-list" id="convList" aria-live="polite"></div>
+      </aside>
+
+      <main class="panel">
+        <div id="convHeader" class="meta">Select a conversation</div>
+        <div id="messages" class="messages"></div>
+
+        <div style="margin-top:12px">
+          <textarea id="replyText" placeholder="Type your reply here"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="sendReplyBtn">Send Reply</button>
+            <button id="markReadBtn">Mark Read</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const MASTER_KEY = '$2a$10$svnhQL3Pt/YL1xljam4at.8jA8sEzr28CUe2VG57uQIKHcH1EPwcq';
+    const BIN_ID = '69d416c0aaba882197ce78fb';
+    const JSONBIN_BASE = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+    const POLL_INTERVAL = 2000;
+
+    const convListEl = document.getElementById('convList');
+    const messagesEl = document.getElementById('messages');
+    const convHeaderEl = document.getElementById('convHeader');
+    const replyTextEl = document.getElementById('replyText');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const sendReplyBtn = document.getElementById('sendReplyBtn');
+    const newConvBtn = document.getElementById('newConvBtn');
+    const markReadBtn = document.getElementById('markReadBtn');
+
+    let binData = { conversations: [] };
+    let selectedConvId = null;
+    let pollTimer = null;
+
+    async function fetchBin() {
+      const res = await fetch(JSONBIN_BASE + '/latest', {
+        method: 'GET',
+        headers: { 'X-Master-Key': MASTER_KEY }
+      });
+      if (!res.ok) throw new Error('Fetch bin failed: ' + res.status);
+      const payload = await res.json();
+      return payload.record || payload;
+    }
+
+    async function putBin(data, retries = 3) {
+      try {
+        const res = await fetch(JSONBIN_BASE, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('Put bin failed: ' + res.status);
+        return await res.json();
+      } catch (err) {
+        if (retries > 0) {
+          await new Promise(r => setTimeout(r, 200 + Math.random() * 300));
+          return putBin(data, retries - 1);
+        }
+        throw err;
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]).replace(/\n/g,'<br>');
+    }
+
+    function renderConvList() {
+      convListEl.innerHTML = '';
+      const convs = Array.isArray(binData.conversations) ? binData.conversations.slice().sort((a,b) => b.createdAt.localeCompare(a.createdAt)) : [];
+      if (!convs.length) {
+        convListEl.innerHTML = '<div class="meta">No conversations yet.</div>';
+        return;
+      }
+      convs.forEach(c => {
+        const last = (c.messages && c.messages.length) ? c.messages[c.messages.length-1] : null;
+        const userName = (c.meta && c.meta.name) ? c.meta.name : 'Anonymous';
+        const el = document.createElement('div');
+        el.className = 'conv-item';
+        el.innerHTML = `<div><strong class="user-name">${escapeHtml(userName)}</strong> <span style="font-family:monospace;color:var(--muted);font-size:12px;margin-left:8px">${c.id}</span></div>
+                        <div class="meta">${new Date(c.createdAt).toLocaleString()} • ${c.messages ? c.messages.length : 0} messages</div>
+                        <div class="meta">${last ? (last.sender + ': ' + (last.text.slice(0,80))) : ''}</div>`;
+        el.addEventListener('click', () => selectConversation(c.id));
+        convListEl.appendChild(el);
+      });
+    }
+
+    function renderMessages(conv) {
+      messagesEl.innerHTML = '';
+      if (!conv) return;
+      const userName = (conv.meta && conv.meta.name) ? conv.meta.name : 'Anonymous';
+      convHeaderEl.innerHTML = `<span class="user-name">${escapeHtml(userName)}</span> • ${conv.id} • created ${new Date(conv.createdAt).toLocaleString()}`;
+      (conv.messages || []).forEach(m => {
+        const d = document.createElement('div');
+        d.className = 'msg ' + (m.sender === 'user' ? 'user' : 'admin');
+        const nameLine = m.sender === 'user' ? `<div style="font-weight:600;margin-bottom:6px">${escapeHtml(m.senderName || userName)}</div>` : `<div style="font-weight:600;margin-bottom:6px">Admin</div>`;
+        d.innerHTML = `${nameLine}<div>${escapeHtml(m.text)}</div><div class="meta">${m.sender} • ${new Date(m.ts).toLocaleString()}</div>`;
+        messagesEl.appendChild(d);
+      });
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function loadBin() {
+      try {
+        const data = await fetchBin();
+        binData = data || { conversations: [] };
+        if (!Array.isArray(binData.conversations)) binData.conversations = [];
+        renderConvList();
+        if (selectedConvId) {
+          const conv = binData.conversations.find(c => c.id === selectedConvId);
+          if (conv) renderMessages(conv);
+        }
+      } catch (err) {
+        alert('Failed to load bin: ' + err.message);
+      }
+    }
+
+    function selectConversation(id) {
+      selectedConvId = id;
+      const conv = binData.conversations.find(c => c.id === id);
+      renderMessages(conv);
+    }
+
+    async function sendReply() {
+      if (!selectedConvId) return alert('Select a conversation first.');
+      const text = replyTextEl.value.trim();
+      if (!text) return;
+      try {
+        const data = await fetchBin();
+        if (!Array.isArray(data.conversations)) data.conversations = [];
+        const conv = data.conversations.find(c => c.id === selectedConvId);
+        if (!conv) return alert('Conversation not found.');
+        conv.messages.push({ id: 'm_' + Date.now() + '_a', sender: 'admin', text, ts: Date.now() });
+        await putBin(data);
+        binData = data;
+        renderMessages(conv);
+        renderConvList();
+        replyTextEl.value = '';
+      } catch (err) {
+        alert('Failed to send reply: ' + err.message);
+      }
+    }
+
+    async function createTestConversation() {
+      const id = 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+      const conv = {
+        id,
+        createdAt: new Date().toISOString(),
+        messages: [{ id: 'm_' + Date.now() + '_u', sender: 'user', senderName: 'Test User', text: 'Hello from test user', ts: Date.now() }],
+        meta: { name: 'Test User', createdBy: 'admin-console' }
+      };
+      try {
+        const data = await fetchBin();
+        if (!Array.isArray(data.conversations)) data.conversations = [];
+        data.conversations.push(conv);
+        await putBin(data);
+        await loadBin();
+      } catch (err) {
+        alert('Failed to create test conversation: ' + err.message);
+      }
+    }
+
+    async function markRead() {
+      if (!selectedConvId) return alert('Select a conversation first.');
+      try {
+        const data = await fetchBin();
+        const conv = (data.conversations || []).find(c => c.id === selectedConvId);
+        if (!conv) return alert('Conversation not found.');
+        conv.meta = conv.meta || {};
+        conv.meta.lastReadByAdmin = new Date().toISOString();
+        await putBin(data);
+        binData = data;
+        renderConvList();
+        alert('Marked as read.');
+      } catch (err) {
+        alert('Failed to mark read: ' + err.message);
+      }
+    }
+
+    function startPolling() {
+      if (pollTimer) return;
+      pollTimer = setInterval(async () => {
+        try {
+          const latest = await fetchBin();
+          const latestCount = (latest.conversations || []).length;
+          const localCount = (binData.conversations || []).length;
+          if (latestCount !== localCount) {
+            binData = latest;
+            renderConvList();
+            if (selectedConvId) {
+              const conv = binData.conversations.find(c => c.id === selectedConvId);
+              if (conv) renderMessages(conv);
+            }
+          } else if (selectedConvId) {
+            const convLatest = (latest.conversations || []).find(c => c.id === selectedConvId);
+            const convLocal = (binData.conversations || []).find(c => c.id === selectedConvId);
+            if (convLatest && convLocal && (convLatest.messages || []).length !== (convLocal.messages || []).length) {
+              binData = latest;
+              renderMessages(convLatest);
+              renderConvList();
+            }
+          }
+        } catch (e) {
+          console.warn('admin poll error', e);
+        }
+      }, POLL_INTERVAL);
+    }
+
+    refreshBtn.addEventListener('click', loadBin);
+    sendReplyBtn.addEventListener('click', sendReply);
+    newConvBtn.addEventListener('click', createTestConversation);
+    markReadBtn.addEventListener('click', markRead);
+
+    (async function init() {
+      await loadBin();
+      startPolling();
+    })();
+  </script>
+</body>
+</html>
